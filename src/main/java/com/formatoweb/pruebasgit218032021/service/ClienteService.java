@@ -7,4 +7,5 @@ import java.util.List;
 public interface ClienteService {
     List<Cliente> getClientes();
     Cliente saveClientes(Cliente cliente);
+    void deleteCliente(Long id);
 }
