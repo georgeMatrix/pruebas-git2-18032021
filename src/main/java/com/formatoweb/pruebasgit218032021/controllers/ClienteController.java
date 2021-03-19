@@ -30,4 +30,9 @@ public class ClienteController {
     public Cliente getClienteById(@PathVariable Long id){
         return clienteService.clienteById(id);
     }
+
+    @DeleteMapping("/cliente/{id}")
+    public void deleteCliente(@PathVariable Long id){
+        clienteService.deleteCliente(id);
+    }
 }
