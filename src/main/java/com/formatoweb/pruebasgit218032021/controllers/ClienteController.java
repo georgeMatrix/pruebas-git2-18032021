@@ -12,6 +12,8 @@ import com.formatoweb.pruebasgit218032021.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.xml.ws.Response;
+import java.util.HashMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +45,23 @@ public class ClienteController {
     }
 
     @GetMapping("/cliente/{id}")
-    public Cliente getClienteById(@PathVariable Long id){
-        return clienteService.clienteById(id);
+    public ResponseEntity<?> getClienteById(@PathVariable Long id){
+        Map<String, Object> response = new HashMap<>();
+        Cliente cliente = clienteService.clienteById(id);
+        if (cliente == null){
+            response.put("error", "No se encuentra el dato con el id: ".concat(id.toString()));
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+        try{
+            cliente = clienteService.clienteById(id);
+        }catch (DataAccessException e){
+            response.put("mensaje", "Hubo un error en la base de datos");
+            response.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        response.put("mensaje", "Tu id fue encontrado");
+        response.put("cliente", cliente);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/cliente/{id}")
